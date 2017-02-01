@@ -4,6 +4,7 @@ from jinja2 import StrictUndefined
 
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from model import connect_to_db, db, User, Rating, Movie
 
@@ -33,9 +34,11 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+
 @app.route("/register", methods=["GET"])
 def register_form():
     return render_template("register_form.html")
+
 
 @app.route("/register", methods=["POST"])
 def register_process():
@@ -52,16 +55,35 @@ def register_process():
         flash("User already exists")
     return redirect("/")
 
-@app.route("/login")
-def login_form():
-    email = request.args.get("l-username")
-    password = request.args.get("l-password")
-    // get user for user_id
-    count = User.query.filter(email == email, password==password).count()
-    if count != 0:
-        flash("Sucsuccessfully login")
-        session[]
 
+@app.route("/login", methods=["GET"])
+def show_login():
+    """Show login form."""
+    return render_template("login_form.html")
+
+
+@app.route("/login", methods=["POST"])
+def login_form():
+    #get user-provided email and password from request.form
+    email = request.form.get("username")
+    password = request.form.get("password")
+
+    if "logged_in_user_id" not in session:
+        session["logged_in_user_id"] = {}
+
+    try:
+        user = User.query.filter_by(email=email).one()
+    except NoResultFound:
+        flash("User is not found in our base")
+        return redirect('/login')
+
+    if password == user.password:
+        session["logged_in_user_id"][user.user_id] = user.user_id
+        flash("Login successful")
+        return redirect('/')
+    else:
+        flash("Incorrect password")
+        return redirect('/login')
 
 
 if __name__ == "__main__":
