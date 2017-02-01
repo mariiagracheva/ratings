@@ -52,6 +52,17 @@ def register_process():
         flash("User already exists")
     return redirect("/")
 
+@app.route("/login")
+def login_form():
+    email = request.args.get("l-username")
+    password = request.args.get("l-password")
+    // get user for user_id
+    count = User.query.filter(email == email, password==password).count()
+    if count != 0:
+        flash("Sucsuccessfully login")
+        session[]
+
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
