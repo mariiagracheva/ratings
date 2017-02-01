@@ -35,12 +35,22 @@ def user_list():
 
 @app.route("/register", methods=["GET"])
 def register_form():
-    pass
-
-
     return render_template("register_form.html")
 
-
+@app.route("/register", methods=["POST"])
+def register_process():
+    """add new user to db"""
+    email = request.form.get("username")
+    password = request.form.get("password")
+    count = User.query.filter_by(email=email).count()
+    if count == 0:
+        user = User(email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        flash("User sucsuccessfully added")
+    else:
+        flash("User already exists")
+    return redirect("/")
 
 
 if __name__ == "__main__":
