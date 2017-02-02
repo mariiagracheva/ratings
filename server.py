@@ -45,9 +45,11 @@ def register_process():
     """add new user to db"""
     email = request.form.get("username")
     password = request.form.get("password")
-    count = User.query.filter_by(email=email).count()
-    if count == 0:
-        user = User(email=email, password=password)
+    age = request.form.get("age")
+    zipcode = request.form.get("zipcode")
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        user = User(email=email, password=password, age=age, zipcode=zipcode)
         db.session.add(user)
         db.session.commit()
         flash("User sucsuccessfully added")
@@ -78,13 +80,32 @@ def login_form():
         return redirect('/login')
 
     if password == user.password:
-        session["logged_in_user_id"][user.user_id] = user.user_id
+        session["logged_in_user_id"] = user.user_id
+        print session
         flash("Login successful")
         return redirect('/')
     else:
         flash("Incorrect password")
         return redirect('/login')
 
+
+@app.route("/logout")
+def logout():
+    session.pop('logged_in_user_id', None)
+    flash('You were logged out')
+    return redirect('/')
+
+@app.route("/users/<user_id>")
+def show_user(user_id):
+    """Return page showing the details of user."""
+
+    user = User.query.get(user_id)
+    print user
+    print user.email
+    print user.age
+    print user.zipcode
+    return render_template("user_details.html",
+                           display_user=user)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

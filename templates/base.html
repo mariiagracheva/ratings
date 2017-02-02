@@ -7,6 +7,12 @@
 <body>
 
   Ratings
+  <BR>
+  {% if "logged_in_user_id" in session %}
+    <a href="/logout">Logout</a>
+  {% else %}
+    <a href="/login">Log In</a>
+  {% endif %}
   <hr>
     <!-- Show flashed messages -->
   {% with messages = get_flashed_messages() %}
