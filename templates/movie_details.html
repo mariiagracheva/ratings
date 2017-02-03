@@ -9,9 +9,21 @@
         <li>IMDB: {{ display_movie.imdb_url }}</li>
     </ul>
 
+    {% if "logged_in_user_id" in session %}
+        <form id="rating_form">
+            Your rating: <input id = "score" type="number" name="score">
+            <button type="submit">Rate!</button>
+        </form><br>    
+    {% endif %}    
+
     <div>User: score</div><br>
     {% for score, email in display_movie_rating %}
         <div>{{ email }}: {{ score }}</div>
     {% endfor %}
 
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+    
+    </script>
 {% endblock %}
