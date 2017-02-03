@@ -35,6 +35,25 @@ def user_list():
     return render_template("user_list.html", users=users)
 
 
+@app.route("/users/<user_id>")
+def show_user(user_id):
+    """Return page showing the details of user."""
+
+    print user_id
+    user = User.query.get(user_id)
+    print user
+    print user.user_id
+    print user.email
+    print user.age
+    print user.zipcode
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    user_rating = db.session.query(Rating.score, Movie.title).join(Movie).filter(Rating.user_id == user_id).all()
+    print user_rating
+    print len(user_rating)
+    return render_template("user_details.html",
+                           display_user=user,
+                           display_user_rating=user_rating)
+
 @app.route("/register", methods=["GET"])
 def register_form():
     return render_template("register_form.html")
@@ -83,7 +102,8 @@ def login_form():
         session["logged_in_user_id"] = user.user_id
         print session
         flash("Login successful")
-        return redirect('/')
+        route_to_user_id = '/users/' + str(user.user_id)
+        return redirect(route_to_user_id)
     else:
         flash("Incorrect password")
         return redirect('/login')
@@ -95,17 +115,33 @@ def logout():
     flash('You were logged out')
     return redirect('/')
 
-@app.route("/users/<user_id>")
-def show_user(user_id):
-    """Return page showing the details of user."""
 
-    user = User.query.get(user_id)
-    print user
-    print user.email
-    print user.age
-    print user.zipcode
-    return render_template("user_details.html",
-                           display_user=user)
+
+@app.route("/movies")
+def movies_list():
+    """Show all movies"""
+
+    movies = Movie.query.order_by(Movie.title).all()
+    print movies
+    return render_template("movie_list.html", movies=movies)
+
+@app.route("/movies/<movie_id>")
+def show_movie(movie_id):
+    """Return page showing the details of movies."""
+
+    print movie_id
+    movie = Movie.query.get(movie_id)
+    print movie
+    print movie.movie_id
+    print movie.title
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    movie_rating = db.session.query(Rating.score, User.email).join(User).filter(Rating.movie_id == movie_id).all()
+    print movie_rating
+    print len(movie_rating)
+    return render_template("movie_details.html",
+                           display_movie=movie,
+                           display_movie_rating=movie_rating)
+
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the

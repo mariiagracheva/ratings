@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Movie details</h2>
+    <ul>
+        <li>Title: {{ display_movie.title }}</li>
+        <li>Released at: {{ display_movie.released_at }}</li>
+        <li>IMDB: {{ display_movie.imdb_url }}</li>
+    </ul>
+
+    <div>User: score</div><br>
+    {% for score, email in display_movie_rating %}
+        <div>{{ email }}: {{ score }}</div>
+    {% endfor %}
+
+{% endblock %}

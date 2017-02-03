@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block body %}
+{% block content %}
 
     <h2>User details</h2>
     <ul>
@@ -8,5 +8,10 @@
         <li>Age: {{ display_user.age }}</li>
         <li>ZIP-code: {{ display_user.zipcode }}</li>
     </ul>
+
+    <div>Title: score</div><br>
+    {% for score, title in display_user_rating %}
+        <div>{{ title }}: {{ score }}</div>
+    {% endfor %}
 
 {% endblock %}
